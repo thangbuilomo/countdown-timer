@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #timer {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px;
+        }
+        .flash {
+            background-color: yellow;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Countdown Timer</h1>
+    
+    <label for="countdown">Chọn số phút đếm ngược:</label>
+    <input type="number" id="countdown" min="1" value="10"> phút<br><br>
+    
+    <label for="interval">Chu kỳ cảnh báo (phút):</label>
+    <input type="number" id="interval" min="1" value="2"> phút<br><br>
+    
+    <button onclick="startTimer()">Bắt đầu</button>
+    <button onclick="resetTimer()">Dừng</button>
+
+    <h2 id="timer">00:00</h2>
+
+    <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
+    <script>
+        let countdownInterval;
+        let warningInterval;
+        let totalSeconds;
+        let remainingSeconds;
+        let flashCount = 0;
+        let isFlashing = false;
+        let audioContext;
+
+        function startTimer() {
+            let minutes = parseInt(document.getElementById("countdown").value);
+            let warningMinutes = parseInt(document.getElementById("interval").value);
+            totalSeconds = minutes * 60;
+            remainingSeconds = totalSeconds;
+
+            clearInterval(countdownInterval);
+            clearInterval(warningInterval);
+            updateDisplay();
+
+            countdownInterval = setInterval(() => {
+                if (remainingSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    clearInterval(warningInterval);
+                    alert("Hết giờ!");
+                    return;
+                }
+
+                remainingSeconds--;
+                updateDisplay();
+            }, 1000);
+
+            warningInterval = setInterval(() => {
+                playWarning();
+            }, warningMinutes * 60 * 1000);
+        }
+
+        function updateDisplay() {
+            let minutes = Math.floor(remainingSeconds / 60);
+            let seconds = remainingSeconds % 60;
+            document.getElementById("timer").textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function playWarning() {
+            let flashElement = document.body;
+            flashCount = 0;
+            isFlashing = true;
+
+            // Flash màn hình
+            let flashInterval = setInterval(() => {
+                flashElement.classList.toggle("flash");
+                playBeep();
+                flashCount++;
+
+                if (flashCount >= 5) {
+                    clearInterval(flashInterval);
+                    flashElement.classList.remove("flash");
+                    isFlashing = false;
+                }
+            }, 500);
+       
