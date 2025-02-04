@@ -102,3 +102,13 @@
                 }
             }, 500);
        
+        function resetTimer() {
+            clearInterval(countdownInterval);
+            clearInterval(warningInterval);
+            remainingSeconds = 0;
+            updateDisplay();
+            document.body.classList.remove("flash");
+        }
+    </script>
+</body>
+</html>
