@@ -109,6 +109,19 @@
             updateDisplay();
             document.body.classList.remove("flash");
         }
+		
+		document.addEventListener("DOMContentLoaded", function() {
+		document.querySelector("button:nth-child(1)").addEventListener("click", startTimer);
+		document.querySelector("button:nth-child(2)").addEventListener("click", resetTimer);
+		});
+
+		function playBeep() {
+			let beep = document.getElementById("beep");
+			if (beep) {
+				beep.play();
+			}
+		}
+
     </script>
 </body>
 </html>
